@@ -28,6 +28,8 @@ def get_script(s3_client, script_bucket: str, key: str) -> str:
     print(f"{key=}")
     response = s3_client.get_object(Bucket=script_bucket, Key=key)
     print(f"{response=}")
+    body = response["Body"].read()
+    print(f"{body=}")
     return ""
 
 
