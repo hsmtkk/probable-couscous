@@ -1,3 +1,4 @@
+import json
 import os
 
 import boto3
@@ -16,6 +17,8 @@ def lambda_handler(event, context):
         script_bucket = s3_event["bucket"]["name"]
         key = s3_event["object"]["key"]
         script = get_script(s3_client, script_bucket, key)
+        result = comprehend(comprehend_client, script)
+        put_result(s3_client, result_bucket, key, result)
 
     return {}
 
@@ -28,5 +31,15 @@ def get_script(s3_client, script_bucket: str, key: str) -> str:
     return ""
 
 
-# https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/comprehend/client/detect_dominant_language.html
-# https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/comprehend/client/detect_sentiment.html
+def comprehend(comprehend_client, script: str) -> str:
+    response = comprehend_client.detect_dominant_language(Text=script)
+    print(f"{response=}")
+    lang = response["Languages"][0]["LanguageCode"]
+    result = comprehend_client.detect_sentiment(Text=script, LanguageCode=lang)
+    print(f"{result=}")
+    return json.dumps(result)
+
+
+def put_result(s3_client, result_bucket: str, key: str, result: str) -> None:
+    response = s3_client.put_object(Body=result.encode(), Bucket=result_bucket, Key=key)
+    print(f"{response=}")
