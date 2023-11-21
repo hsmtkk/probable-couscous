@@ -31,7 +31,7 @@ def get_script(s3_client, script_bucket: str, key: str) -> str:
     body = response["Body"].read()
     print(f"{body=}")
     decoded = json.loads(body)
-    script = decoded["transcripts"][0]["transcript"]
+    script = decoded["results"]["transcripts"][0]["transcript"]
     print(f"{script=}")
     return script
 
