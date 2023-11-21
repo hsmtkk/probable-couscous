@@ -5,7 +5,7 @@ data "archive_file" "transcribe" {
 }
 
 resource "aws_lambda_function" "transcribe" {
-  function_name    = "transcribe-${var.unique_suffix}"
+  function_name    = "${var.unique_prefix}-transcribe"
   handler          = "transcribe.lambda_handler"
   runtime          = "python3.11"
   filename         = data.archive_file.transcribe.output_path
@@ -33,7 +33,7 @@ data "archive_file" "comprehend" {
 }
 
 resource "aws_lambda_function" "comprehend" {
-  function_name    = "comprehend-${var.unique_suffix}"
+  function_name    = "${var.unique_prefix}-comprehend"
   handler          = "comprehend.lambda_handler"
   runtime          = "python3.11"
   filename         = data.archive_file.comprehend.output_path

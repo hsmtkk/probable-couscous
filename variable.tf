@@ -1,3 +1,3 @@
-variable "unique_suffix" {
+variable "unique_prefix" {
   type = string
 }
